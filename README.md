@@ -7,11 +7,11 @@ A custom Lovelace card for Samsung dryers using the Home Assistant SmartThings i
 ## 📸 Preview
 
 <p align="center">
-  <img src="images/hero.png" width="400">
+  <img src="images/hero-card.png" width="400">
 </p>
 
 <p align="center">
-  <img src="images/compact.png" width="400">
+  <img src="images/compact-card.png" width="400">
 </p>
 
 ---
