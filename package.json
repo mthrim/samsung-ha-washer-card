@@ -1,0 +1,28 @@
+{
+  "name": "samsung-ha-dryer-card",
+  "version": "0.1.0",
+  "description": "Samsung SmartThings Dryer Card for Home Assistant",
+  "author": "Christopher King",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/samsung-ha-dryer-card.js",
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --minify --outfile=dist/samsung-ha-dryer-card.js",
+    "build:dev": "esbuild src/main.js --bundle --outfile=dist/samsung-ha-dryer-card.js --sourcemap",
+    "watch": "esbuild src/main.js --bundle --outfile=dist/samsung-ha-dryer-card.js --watch"
+  },
+  "dependencies": {
+    "lit": "^3.1.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  },
+  "keywords": [
+    "home-assistant",
+    "lovelace",
+    "custom-card",
+    "samsung",
+    "smartthings",
+    "dryer"
+  ]
+}
