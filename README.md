@@ -41,6 +41,15 @@ A custom Lovelace card for Samsung dryers using the Home Assistant SmartThings i
 
 Then add the resource if HACS does not automatically:
 
+## 🙌 Credits
+
+Based on and inspired by the Samsung washer card by  
+[@raulpetruta](https://github.com/raulpetruta).
+
+https://github.com/raulpetruta/samsung-ha-washer-card
+
+Portions of logic and structure were adapted for dryer support.
+
 ```yaml
 url: /hacsfiles/Samsung-Dryer-Card/samsung-ha-dryer-card.js
 type: module
