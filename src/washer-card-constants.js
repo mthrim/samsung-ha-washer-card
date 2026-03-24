@@ -1,26 +1,30 @@
-export const CARD_TAG = "samsung-ha-dryer-card";
+export const CARD_TAG = "samsung-ha-washer-card";
 
 export const DEFAULT_CONFIG = {
-  device_name: "dryer",
-  title: "Dryer",
+  device_name: "washer",
+  title: "Washer",
   show_subtitle: true,
   layout_mode: "hero",
   show_completion_time: true,
   show_status_chips: true,
   show_power: true,
   show_energy: true,
-  show_wrinkle_prevent_control: true,
+  show_bubble_soak_control: true,
+  show_washer_settings: true,
   icons: {
-    appliance: "mdi:tumble-dryer",
+    appliance: "mdi:washing-machine",
     start: "mdi:play",
     pause: "mdi:pause",
     stop: "mdi:stop",
     child_lock: "mdi:lock",
     remote_control: "mdi:remote",
-    wrinkle_prevent: "mdi:tshirt-crew",
+    bubble_soak: "mdi:water-circle",
     power: "mdi:flash",
     energy: "mdi:lightning-bolt",
-    complete: "mdi:clock-outline"
+    complete: "mdi:clock-outline",
+    spin_level: "mdi:rotate-3d-variant",
+    rinse_cycles: "mdi:water-sync",
+    extra_detergent: "mdi:bottle-tonic"
   }
 };
 
@@ -31,28 +35,28 @@ export const ENTITY_KEYS = {
   command: "command",
   childLock: "child_lock",
   remoteControl: "remote_control",
-  wrinklePreventActive: "wrinkle_prevent_active",
-  wrinklePreventSwitch: "wrinkle_prevent_switch",
+  bubbleSoak: "bubble_soak",
+  spinLevel: "spin_level",
+  rinseCycles: "rinse_cycles",
+  extraDetergent: "extra_detergent",
   power: "power",
   cycleEnergy: "cycle_energy"
 };
 
 export const JOB_STATE_LABELS = {
-  cooling: "Cooling",
+  washing: "Washing",
+  rinsing: "Rinsing",
+  spinning: "Spinning",
+  pre_wash: "Pre-Wash",
+  soaking: "Soaking",
+  rinse_hold: "Rinse Hold",
   delay_wash: "Delayed",
-  drying: "Drying",
   finished: "Finished",
   none: "Idle",
-  refreshing: "Refreshing",
-  weight_sensing: "Sensing Load",
-  wrinkle_prevent: "Wrinkle Prevent",
-  dehumidifying: "Dehumidifying",
-  ai_drying: "AI Drying",
+  spin_only: "Spin Only",
+  drying: "Drying",
   sanitizing: "Sanitizing",
-  internal_care: "Internal Care",
-  freeze_protection: "Freeze Protection",
-  continuous_dehumidifying: "Continuous Dehumidifying",
-  thawing_frozen_inside: "Thawing"
+  steam: "Steam"
 };
 
 export const MACHINE_STATE_LABELS = {

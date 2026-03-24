@@ -1,4 +1,4 @@
-export async function setDryerCommand(card, entityId, option) {
+export async function setWasherCommand(card, entityId, option) {
   if (!entityId) return;
 
   await card.hass.callService("select", "select_option", {

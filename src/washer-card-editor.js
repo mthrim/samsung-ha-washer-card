@@ -1,5 +1,5 @@
 import { LitElement, html, css } from "lit";
-import { DEFAULT_CONFIG } from "./dryer-card-constants";
+import { DEFAULT_CONFIG } from "./washer-card-constants";
 
 const ENTITY_FIELDS = [
   { key: "machine_state_entity", label: "Machine State Entity" },
@@ -8,8 +8,10 @@ const ENTITY_FIELDS = [
   { key: "command_entity", label: "Command Entity" },
   { key: "child_lock_entity", label: "Child Lock Entity" },
   { key: "remote_control_entity", label: "Remote Control Entity" },
-  { key: "wrinkle_prevent_active_entity", label: "Wrinkle Prevent Active Entity" },
-  { key: "wrinkle_prevent_switch_entity", label: "Wrinkle Prevent Switch Entity" },
+  { key: "bubble_soak_entity", label: "Bubble Soak Entity" },
+  { key: "spin_level_entity", label: "Spin Level Entity" },
+  { key: "rinse_cycles_entity", label: "Rinse Cycles Entity" },
+  { key: "extra_detergent_entity", label: "Extra Detergent Entity" },
   { key: "power_entity", label: "Power Entity" },
   { key: "energy_entity", label: "Energy Entity" }
 ];
@@ -20,7 +22,8 @@ const BOOLEAN_FIELDS = [
   { key: "show_status_chips", label: "Show status chips" },
   { key: "show_power", label: "Show power" },
   { key: "show_energy", label: "Show cycle energy" },
-  { key: "show_wrinkle_prevent_control", label: "Show wrinkle prevent control" }
+  { key: "show_bubble_soak_control", label: "Show bubble soak control" },
+  { key: "show_washer_settings", label: "Show washer settings (spin, rinse, detergent)" }
 ];
 
 const ICON_FIELDS = [
@@ -30,13 +33,16 @@ const ICON_FIELDS = [
   { key: "stop", label: "Stop Icon" },
   { key: "child_lock", label: "Child Lock Icon" },
   { key: "remote_control", label: "Remote Icon" },
-  { key: "wrinkle_prevent", label: "Wrinkle Prevent Icon" },
+  { key: "bubble_soak", label: "Bubble Soak Icon" },
+  { key: "spin_level", label: "Spin Level Icon" },
+  { key: "rinse_cycles", label: "Rinse Cycles Icon" },
+  { key: "extra_detergent", label: "Extra Detergent Icon" },
   { key: "power", label: "Power Icon" },
   { key: "energy", label: "Energy Icon" },
   { key: "complete", label: "Completion Icon" }
 ];
 
-export class SamsungHADryerCardEditor extends LitElement {
+export class SamsungHAWasherCardEditor extends LitElement {
   static properties = {
     hass: {},
     _config: { state: true }
@@ -231,7 +237,7 @@ export class SamsungHADryerCardEditor extends LitElement {
           "Device Name",
           this._config.device_name,
           (e) => this._updateField("device_name", e.target.value),
-          "Used for automatic entity discovery, for example: dryer"
+          "Used for automatic entity discovery, for example: washer"
         )}
         ${this._renderLayoutModeField()}
       </div>
@@ -263,6 +269,6 @@ export class SamsungHADryerCardEditor extends LitElement {
 }
 
 customElements.define(
-  "samsung-ha-dryer-card-editor",
-  SamsungHADryerCardEditor
+  "samsung-ha-washer-card-editor",
+  SamsungHAWasherCardEditor
 );

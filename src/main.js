@@ -1,9 +1,9 @@
-import "./dryer-card";
-import "./dryer-card-editor";
+import "./washer-card";
+import "./washer-card-editor";
 
 window.customCards = window.customCards || [];
 window.customCards.push({
-  type: "samsung-ha-dryer-card",
-  name: "Samsung HA Dryer Card",
-  description: "A SmartThings-based Samsung dryer card for Home Assistant"
+  type: "samsung-ha-washer-card",
+  name: "Samsung HA Washer Card",
+  description: "A SmartThings-based Samsung washer card for Home Assistant"
 });

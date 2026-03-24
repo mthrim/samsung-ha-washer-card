@@ -1,7 +1,7 @@
 {
-  "name": "Samsung HA Dryer Card",
+  "name": "Samsung HA Washer Card",
   "content_in_root": false,
-  "filename": "samsung-ha-dryer-card.js",
+  "filename": "samsung-ha-washer-card.js",
   "render_readme": true,
   "homeassistant": "2023.9.0"
 }

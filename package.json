@@ -1,15 +1,15 @@
 {
-  "name": "samsung-ha-dryer-card",
+  "name": "samsung-ha-washer-card",
   "version": "0.1.0",
-  "description": "Samsung SmartThings Dryer Card for Home Assistant",
+  "description": "Samsung SmartThings Washer Card for Home Assistant",
   "author": "Christopher King",
   "license": "MIT",
   "type": "module",
-  "main": "dist/samsung-ha-dryer-card.js",
+  "main": "dist/samsung-ha-washer-card.js",
   "scripts": {
-    "build": "esbuild src/main.js --bundle --minify --outfile=dist/samsung-ha-dryer-card.js",
-    "build:dev": "esbuild src/main.js --bundle --outfile=dist/samsung-ha-dryer-card.js --sourcemap",
-    "watch": "esbuild src/main.js --bundle --outfile=dist/samsung-ha-dryer-card.js --watch"
+    "build": "esbuild src/main.js --bundle --minify --outfile=dist/samsung-ha-washer-card.js",
+    "build:dev": "esbuild src/main.js --bundle --outfile=dist/samsung-ha-washer-card.js --sourcemap",
+    "watch": "esbuild src/main.js --bundle --outfile=dist/samsung-ha-washer-card.js --watch"
   },
   "dependencies": {
     "lit": "^3.1.2"
@@ -23,6 +23,6 @@
     "custom-card",
     "samsung",
     "smartthings",
-    "dryer"
+    "washer"
   ]
 }

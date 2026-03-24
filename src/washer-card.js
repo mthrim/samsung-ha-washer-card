@@ -9,33 +9,36 @@ import {
   getSecondaryStatus,
   shouldShowCompletionTime,
   formatTimestamp,
-  formatNumber
-} from "./dryer-card-helpers";
-import { ENTITY_KEYS, CARD_TAG } from "./dryer-card-constants";
-import { setDryerCommand, toggleSwitch } from "./dryer-card-actions";
+  formatNumber,
+  isUnavailable,
+  titleCaseLabel
+} from "./washer-card-helpers";
+import { ENTITY_KEYS, CARD_TAG } from "./washer-card-constants";
+import { setWasherCommand, toggleSwitch } from "./washer-card-actions";
 
-export class SamsungHADryerCard extends LitElement {
+export class SamsungHAWasherCard extends LitElement {
   static properties = {
     hass: {},
     _config: { state: true }
   };
 
   static async getConfigElement() {
-    await import("./dryer-card-editor");
-    return document.createElement("samsung-ha-dryer-card-editor");
+    await import("./washer-card-editor");
+    return document.createElement("samsung-ha-washer-card-editor");
   }
 
   static getStubConfig() {
     return {
-      device_name: "dryer",
-      title: "Dryer",
+      device_name: "washer",
+      title: "Washer",
       show_subtitle: true,
       layout_mode: "hero",
       show_completion_time: true,
       show_status_chips: true,
       show_power: true,
       show_energy: true,
-      show_wrinkle_prevent_control: true
+      show_bubble_soak_control: true,
+      show_washer_settings: true
     };
   }
 
@@ -48,7 +51,7 @@ export class SamsungHADryerCard extends LitElement {
   }
 
   getCardSize() {
-    return this._config?.layout_mode === "compact" ? 4 : 5;
+    return this._config?.layout_mode === "compact" ? 4 : 6;
   }
 
   static styles = css`
@@ -395,6 +398,12 @@ export class SamsungHADryerCard extends LitElement {
       gap: 10px;
     }
 
+    .washer-settings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
     .metric {
       border-radius: 18px;
       padding: 14px;
@@ -455,6 +464,10 @@ export class SamsungHADryerCard extends LitElement {
       .completion {
         justify-content: center;
       }
+
+      .washer-settings {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
   `;
 
@@ -497,7 +510,7 @@ export class SamsungHADryerCard extends LitElement {
           <div class="header-text">
             <div class="title">${config.title}</div>
             ${config.show_subtitle
-              ? html`<div class="subtitle">Samsung SmartThings Dryer</div>`
+              ? html`<div class="subtitle">Samsung SmartThings Washer</div>`
               : ""}
           </div>
         </div>
@@ -544,26 +557,16 @@ export class SamsungHADryerCard extends LitElement {
     const config = this._config;
     const entities = buildEntityMap(config);
 
-    const machineState = getStateValue(
-      this.hass,
-      entities[ENTITY_KEYS.machineState]
-    );
-    const jobState = getStateValue(
-      this.hass,
-      entities[ENTITY_KEYS.jobState]
-    );
-    const completion = getStateValue(
-      this.hass,
-      entities[ENTITY_KEYS.completionTime]
-    );
-    const powerState = getEntityState(
-      this.hass,
-      entities[ENTITY_KEYS.power]
-    );
-    const energyState = getEntityState(
-      this.hass,
-      entities[ENTITY_KEYS.cycleEnergy]
-    );
+    const machineState = getStateValue(this.hass, entities[ENTITY_KEYS.machineState]);
+    const jobState = getStateValue(this.hass, entities[ENTITY_KEYS.jobState]);
+    const completion = getStateValue(this.hass, entities[ENTITY_KEYS.completionTime]);
+    const powerState = getEntityState(this.hass, entities[ENTITY_KEYS.power]);
+    const energyState = getEntityState(this.hass, entities[ENTITY_KEYS.cycleEnergy]);
+
+    const bubbleSoakOn = isOn(this.hass, entities[ENTITY_KEYS.bubbleSoak]);
+    const spinLevelValue = getStateValue(this.hass, entities[ENTITY_KEYS.spinLevel]);
+    const rinseCyclesValue = getStateValue(this.hass, entities[ENTITY_KEYS.rinseCycles]);
+    const extraDetergentValue = getStateValue(this.hass, entities[ENTITY_KEYS.extraDetergent]);
 
     const primaryStatus = getPrimaryStatus(machineState, jobState);
     const secondaryStatus = getSecondaryStatus(machineState, jobState);
@@ -572,16 +575,6 @@ export class SamsungHADryerCard extends LitElement {
     const showCompletion =
       config.show_completion_time &&
       shouldShowCompletionTime(machineState, completion);
-
-    const wrinklePreventActive = isOn(
-      this.hass,
-      entities[ENTITY_KEYS.wrinklePreventActive]
-    );
-
-    const wrinklePreventSwitchOn = isOn(
-      this.hass,
-      entities[ENTITY_KEYS.wrinklePreventSwitch]
-    );
 
     const childLockOn = isOn(this.hass, entities[ENTITY_KEYS.childLock]);
     const remoteOn = isOn(this.hass, entities[ENTITY_KEYS.remoteControl]);
@@ -605,6 +598,12 @@ export class SamsungHADryerCard extends LitElement {
     const drumClass = ["drum", isRunning ? "running" : ""]
       .filter(Boolean)
       .join(" ");
+
+    const showSettings =
+      config.show_washer_settings &&
+      (!isUnavailable(spinLevelValue) ||
+        !isUnavailable(rinseCyclesValue) ||
+        !isUnavailable(extraDetergentValue));
 
     return html`
       <ha-card>
@@ -633,13 +632,6 @@ export class SamsungHADryerCard extends LitElement {
                     remoteOn ? "Remote Enabled" : "Remote Disabled",
                     remoteOn
                   )}
-                  ${this.renderChip(
-                    config.icons.wrinkle_prevent,
-                    wrinklePreventActive
-                      ? "Wrinkle Prevent Active"
-                      : "Wrinkle Prevent Idle",
-                    wrinklePreventActive
-                  )}
                 </div>
               `
             : ""}
@@ -649,7 +641,7 @@ export class SamsungHADryerCard extends LitElement {
               class="control-btn primary"
               ?disabled=${isRunning}
               @click=${() =>
-                setDryerCommand(this, entities[ENTITY_KEYS.command], "run")}
+                setWasherCommand(this, entities[ENTITY_KEYS.command], "run")}
             >
               Start
             </button>
@@ -657,7 +649,7 @@ export class SamsungHADryerCard extends LitElement {
               class="control-btn"
               ?disabled=${isPaused || isStopped}
               @click=${() =>
-                setDryerCommand(this, entities[ENTITY_KEYS.command], "pause")}
+                setWasherCommand(this, entities[ENTITY_KEYS.command], "pause")}
             >
               Pause
             </button>
@@ -665,23 +657,49 @@ export class SamsungHADryerCard extends LitElement {
               class="control-btn"
               ?disabled=${isStopped}
               @click=${() =>
-                setDryerCommand(this, entities[ENTITY_KEYS.command], "stop")}
+                setWasherCommand(this, entities[ENTITY_KEYS.command], "stop")}
             >
               Stop
             </button>
           </div>
 
-          ${config.show_wrinkle_prevent_control
+          ${config.show_bubble_soak_control
             ? html`
                 <button
-                  class="toggle-btn ${wrinklePreventSwitchOn ? "active" : ""}"
+                  class="toggle-btn ${bubbleSoakOn ? "active" : ""}"
                   @click=${() =>
-                    toggleSwitch(this, entities[ENTITY_KEYS.wrinklePreventSwitch])}
+                    toggleSwitch(this, entities[ENTITY_KEYS.bubbleSoak])}
                 >
-                  ${wrinklePreventSwitchOn
-                    ? "Wrinkle Prevent Enabled"
-                    : "Enable Wrinkle Prevent"}
+                  ${bubbleSoakOn ? "Bubble Soak Enabled" : "Enable Bubble Soak"}
                 </button>
+              `
+            : ""}
+
+          ${showSettings
+            ? html`
+                <div class="washer-settings">
+                  ${!isUnavailable(spinLevelValue)
+                    ? this.renderMetric(
+                        "Spin Level",
+                        titleCaseLabel(spinLevelValue),
+                        config.icons.spin_level
+                      )
+                    : ""}
+                  ${!isUnavailable(rinseCyclesValue)
+                    ? this.renderMetric(
+                        "Rinse Cycles",
+                        rinseCyclesValue,
+                        config.icons.rinse_cycles
+                      )
+                    : ""}
+                  ${!isUnavailable(extraDetergentValue)
+                    ? this.renderMetric(
+                        "Detergent",
+                        titleCaseLabel(extraDetergentValue),
+                        config.icons.extra_detergent
+                      )
+                    : ""}
+                </div>
               `
             : ""}
 
@@ -699,4 +717,4 @@ export class SamsungHADryerCard extends LitElement {
   }
 }
 
-customElements.define(CARD_TAG, SamsungHADryerCard);
+customElements.define(CARD_TAG, SamsungHAWasherCard);
