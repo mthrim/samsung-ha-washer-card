@@ -622,7 +622,8 @@ export class SamsungHAWasherCard extends LitElement {
       const pct = getCompletionPercent(powerState, completion);
       if (pct === null) return null;
       const color = config.drum_progress_color || "#5b9cf6";
-      return `background: conic-gradient(from -90deg, ${color} ${pct}%, transparent ${pct}%);`;
+      const filled = 100 - pct;
+      return `background: conic-gradient(from -90deg, ${color} ${filled}%, transparent ${filled}%);`;
     })();
 
     const childLockOn = isOn(this.hass, entities[ENTITY_KEYS.childLock]);
