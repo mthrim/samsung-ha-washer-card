@@ -15,9 +15,7 @@ export const DEFAULT_CONFIG = {
   drum_progress_color: "#5b9cf6",
   finished_green_duration: 60,
   completion_color_threshold_1: 50,
-  completion_color_1: "var(--primary-text-color)",
   completion_color_threshold_2: 30,
-  completion_color_2: "var(--primary-text-color)",
   icons: {
     appliance: "mdi:washing-machine",
     start: "mdi:play",
