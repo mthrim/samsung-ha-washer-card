@@ -35,9 +35,9 @@ export function buildEntityMap(config) {
     [ENTITY_KEYS.bubbleSoak]:
       config.bubble_soak_entity || `switch.${device}_bubble_soak`,
     [ENTITY_KEYS.spinLevel]:
-      config.spin_level_entity || `sensor.${device}_spin_level`,
+      config.spin_level_entity || `select.${device}_spin_level`,
     [ENTITY_KEYS.rinseCycles]:
-      config.rinse_cycles_entity || `sensor.${device}_rinse_cycles`,
+      config.rinse_cycles_entity || `number.${device}_rinse_cycles`,
     [ENTITY_KEYS.extraDetergent]:
       config.extra_detergent_entity || `sensor.${device}_extra_detergent`,
     [ENTITY_KEYS.power]:
@@ -88,7 +88,7 @@ export function getPrimaryStatus(machineState, jobState) {
     return JOB_STATE_LABELS[jobState] || MACHINE_STATE_LABELS[machineState] || "Running";
   }
 
-  if (machineState === "stop" && jobState === "finished") {
+  if (machineState === "stop" && jobState === "finish") {
     return "Finished";
   }
 
@@ -108,7 +108,7 @@ export function getSecondaryStatus(machineState, jobState) {
     return MACHINE_STATE_LABELS[machineState] || "Running";
   }
 
-  if (jobState === "finished") {
+  if (jobState === "finish") {
     return "Cycle complete";
   }
 

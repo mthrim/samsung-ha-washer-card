@@ -51,19 +51,22 @@ export const ENTITY_KEYS = {
 };
 
 export const JOB_STATE_LABELS = {
-  washing: "Washing",
-  rinsing: "Rinsing",
-  spinning: "Spinning",
+  wash: "Washing",
+  rinse: "Rinsing",
+  spin: "Spinning",
   pre_wash: "Pre-Wash",
-  soaking: "Soaking",
-  rinse_hold: "Rinse Hold",
   delay_wash: "Delayed",
-  finished: "Finished",
+  finish: "Finished",
   none: "Idle",
-  spin_only: "Spin Only",
   drying: "Drying",
-  sanitizing: "Sanitizing",
-  steam: "Steam"
+  air_wash: "Air Wash",
+  ai_wash: "AI Wash",
+  ai_rinse: "AI Rinse",
+  ai_spin: "AI Spin",
+  cooling: "Cooling",
+  weight_sensing: "Weight Sensing",
+  wrinkle_prevent: "Wrinkle Prevention",
+  freeze_protection: "Freeze Protection"
 };
 
 export const MACHINE_STATE_LABELS = {
