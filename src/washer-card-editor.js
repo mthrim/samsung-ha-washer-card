@@ -23,7 +23,8 @@ const BOOLEAN_FIELDS = [
   { key: "show_power", label: "Show power" },
   { key: "show_energy", label: "Show cycle energy" },
   { key: "show_bubble_soak_control", label: "Show bubble soak control" },
-  { key: "show_washer_settings", label: "Show washer settings (spin, rinse, detergent)" }
+  { key: "show_washer_settings", label: "Show washer settings (spin, rinse, detergent)" },
+  { key: "show_drum_progress", label: "Show drum progress fill" }
 ];
 
 const ICON_FIELDS = [
@@ -80,6 +81,17 @@ export class SamsungHAWasherCardEditor extends LitElement {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
+    }
+
+    .threshold-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .threshold-row:last-child {
+      margin-bottom: 0;
     }
 
     .select-field {
@@ -203,6 +215,35 @@ export class SamsungHAWasherCardEditor extends LitElement {
     `;
   }
 
+  _renderThresholdColorRow(index) {
+    const thresholdKey = `completion_color_threshold_${index}`;
+    const colorKey = `completion_color_${index}`;
+    const thresholdVal = this._config[thresholdKey];
+    const colorVal = this._config[colorKey] || "";
+
+    return html`
+      <div class="threshold-row">
+        <ha-textfield
+          .label=${`Threshold ${index} (%)`}
+          .value=${thresholdVal != null ? String(thresholdVal) : ""}
+          type="number"
+          min="0"
+          max="100"
+          @input=${(e) => {
+            const val = e.target.value;
+            this._updateField(thresholdKey, val === "" ? undefined : Number(val));
+          }}
+        ></ha-textfield>
+        <ha-textfield
+          .label=${`Color ${index} (hex)`}
+          .value=${colorVal}
+          placeholder="#RRGGBB"
+          @input=${(e) => this._updateField(colorKey, e.target.value)}
+        ></ha-textfield>
+      </div>
+    `;
+  }
+
   _renderLayoutModeField() {
     return html`
       <div class="field">
@@ -245,6 +286,27 @@ export class SamsungHAWasherCardEditor extends LitElement {
       <div class="section">
         <div class="section-title">Display Options</div>
         ${BOOLEAN_FIELDS.map((field) => this._renderSwitch(field.label, field.key))}
+        ${this._renderTextField(
+          "Drum progress color (hex)",
+          this._config.drum_progress_color,
+          (e) => this._updateField("drum_progress_color", e.target.value),
+          "Color of the progress fill inside the drum circle"
+        )}
+        ${this._renderTextField(
+          "Green highlight duration (minutes)",
+          this._config.finished_green_duration != null ? String(this._config.finished_green_duration) : "",
+          (e) => this._updateField("finished_green_duration", e.target.value === "" ? undefined : Number(e.target.value)),
+          "How long the card stays green after finishing (0 = always)"
+        )}
+      </div>
+
+      <div class="section">
+        <div class="section-title">Completion Time Colors</div>
+        <div class="field" style="color: var(--secondary-text-color); font-size: 0.85rem; margin-bottom: 12px;">
+          Color the remaining-time badge when below a % threshold. Leave blank to use the default color.
+        </div>
+        ${this._renderThresholdColorRow(1)}
+        ${this._renderThresholdColorRow(2)}
       </div>
 
       <div class="section">

@@ -136,15 +136,70 @@ export function formatTimestamp(hass, value) {
 
   try {
     return new Intl.DateTimeFormat(hass.locale?.language || "en-US", {
-      hour: "numeric",
+      hour: "2-digit",
+      hour12: false,
       minute: "2-digit"
     }).format(date);
   } catch (_err) {
     return date.toLocaleTimeString([], {
-      hour: "numeric",
+      hour: "2-digit",
+      hour12: false,
       minute: "2-digit"
     });
   }
+}
+
+export function isFinishedRecently(machineStateEntity, durationMinutes) {
+  if (!machineStateEntity || machineStateEntity.state !== "stop") {
+    return false;
+  }
+
+  if (!durationMinutes) {
+    return true;
+  }
+
+  const lastChanged = new Date(machineStateEntity.last_changed);
+  if (Number.isNaN(lastChanged.getTime())) {
+    return true;
+  }
+
+  return Date.now() - lastChanged.getTime() <= durationMinutes * 60_000;
+}
+
+export function getCompletionPercent(powerState, completion) {
+  const startStr = powerState?.attributes?.power_consumption_start;
+  if (!startStr || !completion) return null;
+
+  const start = new Date(startStr).getTime();
+  const end = new Date(completion).getTime();
+  const now = Date.now();
+
+  if (Number.isNaN(start) || Number.isNaN(end) || end <= start) return null;
+
+  return Math.max(0, Math.min(100, ((end - now) / (end - start)) * 100));
+}
+
+export function getCompletionColor(powerState, completion, config) {
+  const t1 = config.completion_color_threshold_1;
+  const c1 = config.completion_color_1;
+  const t2 = config.completion_color_threshold_2;
+  const c2 = config.completion_color_2;
+
+  if ((!t1 && t1 !== 0 && !t2 && t2 !== 0) || (!c1 && !c2)) return null;
+
+  const percentRemaining = getCompletionPercent(powerState, completion);
+  if (percentRemaining === null) return null;
+
+  const thresholds = [];
+  if (t1 != null && c1) thresholds.push({ threshold: Number(t1), color: c1 });
+  if (t2 != null && c2) thresholds.push({ threshold: Number(t2), color: c2 });
+  thresholds.sort((a, b) => a.threshold - b.threshold);
+
+  for (const { threshold, color } of thresholds) {
+    if (percentRemaining <= threshold) return color;
+  }
+
+  return null;
 }
 
 export function formatNumber(hass, value, unit) {

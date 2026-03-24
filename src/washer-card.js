@@ -8,8 +8,11 @@ import {
   getPrimaryStatus,
   getSecondaryStatus,
   shouldShowCompletionTime,
+  isFinishedRecently,
   formatTimestamp,
   formatNumber,
+  getCompletionColor,
+  getCompletionPercent,
   isUnavailable,
   titleCaseLabel
 } from "./washer-card-helpers";
@@ -164,13 +167,32 @@ export class SamsungHAWasherCard extends LitElement {
     }
 
     .drum-wrap {
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
     }
 
+    .drum-progress {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      opacity: 0.55;
+      pointer-events: none;
+    }
+
+    .hero.compact .drum-progress {
+      width: 88px;
+      height: 88px;
+    }
+
     .drum {
       position: relative;
+      z-index: 1;
       width: 140px;
       height: 140px;
       border-radius: 50%;
@@ -438,6 +460,13 @@ export class SamsungHAWasherCard extends LitElement {
       color: var(--secondary-text-color);
     }
 
+    ha-card.finished {
+      background:
+        radial-gradient(circle at top right, rgba(255, 255, 255, 0.10), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(255, 255, 255, 0.05), transparent 28%),
+        linear-gradient(180deg, #1a3d2a 0%, #112a1c 100%);
+    }
+
     @keyframes spin {
       from {
         transform: rotate(0deg);
@@ -519,12 +548,16 @@ export class SamsungHAWasherCard extends LitElement {
     `;
   }
 
-  renderHero(config, primaryStatus, secondaryStatus, showCompletion, completion, drumClass) {
+  renderHero(config, primaryStatus, secondaryStatus, showCompletion, completion, drumClass, completionColor, drumProgressStyle) {
     const heroClass = `hero ${config.layout_mode === "compact" ? "compact" : ""}`;
+    const completionStyle = completionColor ? `color: ${completionColor};` : "";
 
     return html`
       <div class=${heroClass}>
         <div class="drum-wrap">
+          ${drumProgressStyle
+            ? html`<div class="drum-progress" style=${drumProgressStyle}></div>`
+            : ""}
           <div class=${drumClass}>
             <div class="drum-center">
               <ha-icon .icon=${config.icons.appliance}></ha-icon>
@@ -538,7 +571,7 @@ export class SamsungHAWasherCard extends LitElement {
 
           ${showCompletion
             ? html`
-                <div class="completion">
+                <div class="completion" style=${completionStyle}>
                   <ha-icon .icon=${config.icons.complete}></ha-icon>
                   <span>Completes at ${formatTimestamp(this.hass, completion)}</span>
                 </div>
@@ -557,7 +590,8 @@ export class SamsungHAWasherCard extends LitElement {
     const config = this._config;
     const entities = buildEntityMap(config);
 
-    const machineState = getStateValue(this.hass, entities[ENTITY_KEYS.machineState]);
+    const machineStateEntity = getEntityState(this.hass, entities[ENTITY_KEYS.machineState]);
+    const machineState = machineStateEntity ? machineStateEntity.state : undefined;
     const jobState = getStateValue(this.hass, entities[ENTITY_KEYS.jobState]);
     const completion = getStateValue(this.hass, entities[ENTITY_KEYS.completionTime]);
     const powerState = getEntityState(this.hass, entities[ENTITY_KEYS.power]);
@@ -568,13 +602,28 @@ export class SamsungHAWasherCard extends LitElement {
     const rinseCyclesValue = getStateValue(this.hass, entities[ENTITY_KEYS.rinseCycles]);
     const extraDetergentValue = getStateValue(this.hass, entities[ENTITY_KEYS.extraDetergent]);
 
-    const primaryStatus = getPrimaryStatus(machineState, jobState);
-    const secondaryStatus = getSecondaryStatus(machineState, jobState);
     const { isRunning, isPaused, isStopped } = this.getStateFlags(machineState);
+    const isGreen = isFinishedRecently(machineStateEntity, config.finished_green_duration);
+    const primaryStatus = isStopped && !isGreen
+      ? "Stopped"
+      : getPrimaryStatus(machineState, jobState);
+    const secondaryStatus = getSecondaryStatus(machineState, jobState);
 
     const showCompletion =
       config.show_completion_time &&
       shouldShowCompletionTime(machineState, completion);
+
+    const completionColor = showCompletion
+      ? getCompletionColor(powerState, completion, config)
+      : null;
+
+    const drumProgressStyle = (() => {
+      if (!config.show_drum_progress || (!isRunning && !isPaused)) return null;
+      const pct = getCompletionPercent(powerState, completion);
+      if (pct === null) return null;
+      const color = config.drum_progress_color || "#5b9cf6";
+      return `background: conic-gradient(from -90deg, ${color} ${pct}%, transparent ${pct}%);`;
+    })();
 
     const childLockOn = isOn(this.hass, entities[ENTITY_KEYS.childLock]);
     const remoteOn = isOn(this.hass, entities[ENTITY_KEYS.remoteControl]);
@@ -606,7 +655,7 @@ export class SamsungHAWasherCard extends LitElement {
         !isUnavailable(extraDetergentValue));
 
     return html`
-      <ha-card>
+      <ha-card class=${isGreen ? "finished" : ""}>
         <div class="card">
           ${this.renderHeader(config, secondaryStatus)}
 
@@ -616,7 +665,9 @@ export class SamsungHAWasherCard extends LitElement {
             secondaryStatus,
             showCompletion,
             completion,
-            drumClass
+            drumClass,
+            completionColor,
+            drumProgressStyle
           )}
 
           ${config.show_status_chips
