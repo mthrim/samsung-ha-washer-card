@@ -80,6 +80,10 @@ export function titleCaseLabel(value) {
 }
 
 export function getPrimaryStatus(machineState, jobState) {
+  if (isUnavailable(machineState)) {
+    return "Idle";
+  }
+
   if (machineState === "pause") {
     return "Paused";
   }
@@ -88,7 +92,7 @@ export function getPrimaryStatus(machineState, jobState) {
     return JOB_STATE_LABELS[jobState] || MACHINE_STATE_LABELS[machineState] || "Running";
   }
 
-  if (machineState === "stop" && jobState === "finished") {
+  if (machineState === "stop" && jobState === "finish") {
     return "Finished";
   }
 
@@ -100,6 +104,10 @@ export function getPrimaryStatus(machineState, jobState) {
 }
 
 export function getSecondaryStatus(machineState, jobState) {
+  if (isUnavailable(machineState)) {
+    return "Standby";
+  }
+
   if (machineState === "pause" && jobState && jobState !== "none") {
     return JOB_STATE_LABELS[jobState] || titleCaseLabel(jobState);
   }
@@ -108,7 +116,7 @@ export function getSecondaryStatus(machineState, jobState) {
     return MACHINE_STATE_LABELS[machineState] || "Running";
   }
 
-  if (jobState === "finished") {
+  if (jobState === "finish") {
     return "Cycle complete";
   }
 
