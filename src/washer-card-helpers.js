@@ -166,6 +166,27 @@ export function isFinishedRecently(machineStateEntity, durationMinutes) {
   return Date.now() - lastChanged.getTime() <= durationMinutes * 60_000;
 }
 
+export function formatCountdown(completion) {
+  if (!completion) return null;
+  const end = new Date(completion).getTime();
+  const now = Date.now();
+  const diff = end - now;
+  if (Number.isNaN(end) || diff <= 0) return null;
+
+  const totalMin = Math.floor(diff / 60000);
+  const totalSec = Math.floor((diff % 60000) / 1000);
+
+  if (totalMin < 10) {
+    return `${totalMin}m ${totalSec}s`;
+  }
+  if (totalMin <= 90) {
+    return `${totalMin}m`;
+  }
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
 export function getCompletionPercent(powerState, completion) {
   const startStr = powerState?.attributes?.power_consumption_start;
   if (!startStr || !completion) return null;

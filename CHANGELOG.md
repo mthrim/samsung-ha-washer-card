@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.4.0 — 2026-03-27
+- `washer-card-helpers.js` — added `formatCountdown()`: formats remaining time as `Xh Ym` (>=90min), `Xm` (<=90min), or `Xm Ys` (<10min)
+- `washer-card.js` — changed drum progress from `conic-gradient` (clock sweep) to `radial-gradient` (center-outward fill) with 10% minimum radius
+- `washer-card.js` — added live countdown timer in hero section below primary status, with 1-second tick interval
+- `washer-card.js` — moved "Completes at" badge to header top-right, increased size
+- `washer-card.js` — removed redundant status badge from header
+- `washer-card.js` — secondary status now shown below countdown in hero
+
 ## 2026-03-25 (2)
 - `washer-card-helpers.js` — fixed `spinLevel` default entity prefix `sensor.` → `select.`; fixed `rinseCycles` default entity prefix `sensor.` → `number.`; fixed `"finished"` job state checks → `"finish"` to match HA enum
 - `washer-card-constants.js` — realigned `JOB_STATE_LABELS` keys to actual HA enum values (`wash`, `rinse`, `spin`, `finish`); added `air_wash`, `ai_wash`, `ai_rinse`, `ai_spin`, `cooling`, `weight_sensing`, `wrinkle_prevent`, `freeze_protection`
