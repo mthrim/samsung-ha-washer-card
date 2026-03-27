@@ -71,6 +71,52 @@ export class SamsungHAWasherCard extends LitElement {
     return this._config?.layout_mode === "compact" ? 4 : 6;
   }
 
+  async _fetchLastKnownState(entities) {
+    try {
+      const ids = [
+        entities[ENTITY_KEYS.machineState],
+        entities[ENTITY_KEYS.jobState],
+        entities[ENTITY_KEYS.completionTime],
+        entities[ENTITY_KEYS.power],
+        entities[ENTITY_KEYS.cycleEnergy],
+      ].filter(Boolean).join(",");
+
+      const now = new Date().toISOString();
+      const oneHourAgo = new Date(Date.now() - 3600000).toISOString();
+      const url = `history/period/${oneHourAgo}?filter_entity_id=${ids}&end_time=${now}&minimal_response&significant_changes_only`;
+      const history = await this.hass.callApi("GET", url);
+      if (!history || !history.length) return null;
+
+      const findLast = (entityId) => {
+        const group = history.find((g) => g.length && g[0].entity_id === entityId);
+        if (!group) return null;
+        for (let i = group.length - 1; i >= 0; i--) {
+          if (group[i].state !== "unavailable" && group[i].state !== "unknown") {
+            return group[i];
+          }
+        }
+        return null;
+      };
+
+      const ms = findLast(entities[ENTITY_KEYS.machineState]);
+      if (!ms) return null;
+
+      const js = findLast(entities[ENTITY_KEYS.jobState]);
+      const ps = findLast(entities[ENTITY_KEYS.power]);
+
+      return {
+        machineStateEntity: ms,
+        machineState: ms.state,
+        jobState: js ? js.state : undefined,
+        completion: findLast(entities[ENTITY_KEYS.completionTime])?.state,
+        powerState: ps || undefined,
+        energyState: findLast(entities[ENTITY_KEYS.cycleEnergy]) || undefined,
+      };
+    } catch (e) {
+      return null;
+    }
+  }
+
   static styles = css`
     :host {
       display: block;
@@ -642,6 +688,13 @@ export class SamsungHAWasherCard extends LitElement {
         powerState: rawPowerState,
         energyState: rawEnergyState,
       };
+    } else if (!this._cachedState && !this._historyPending) {
+      this._historyPending = true;
+      this._fetchLastKnownState(entities).then((cached) => {
+        if (cached) this._cachedState = cached;
+        this._historyPending = false;
+        this.requestUpdate();
+      });
     }
 
     const cached = stale && this._cachedState ? this._cachedState : null;
