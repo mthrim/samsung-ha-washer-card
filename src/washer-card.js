@@ -794,11 +794,13 @@ export class SamsungHAWasherCard extends LitElement {
           ${config.show_status_chips
             ? html`
                 <div class="chips">
-                  ${this.renderChip(
-                    config.icons.child_lock,
-                    childLockOn ? "Child Lock On" : "Child Lock Off",
-                    childLockOn
-                  )}
+                  ${config.show_child_lock
+                    ? this.renderChip(
+                        config.icons.child_lock,
+                        childLockOn ? "Child Lock On" : "Child Lock Off",
+                        childLockOn
+                      )
+                    : ""}
                   ${this.renderChip(
                     config.icons.remote_control,
                     remoteOn ? "Remote Enabled" : "Remote Disabled",
