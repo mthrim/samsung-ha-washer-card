@@ -819,7 +819,7 @@ export class SamsungHAWasherCard extends LitElement {
           <div class="controls">
             <button
               class="control-btn primary"
-              ?disabled=${isRunning}
+              ?disabled=${isRunning || !remoteOn}
               @click=${() =>
                 setWasherCommand(this, entities[ENTITY_KEYS.command], "run")}
             >
@@ -827,7 +827,7 @@ export class SamsungHAWasherCard extends LitElement {
             </button>
             <button
               class="control-btn"
-              ?disabled=${isPaused || isStopped}
+              ?disabled=${isPaused || isStopped || !remoteOn}
               @click=${() =>
                 setWasherCommand(this, entities[ENTITY_KEYS.command], "pause")}
             >
@@ -835,7 +835,7 @@ export class SamsungHAWasherCard extends LitElement {
             </button>
             <button
               class="control-btn"
-              ?disabled=${isStopped}
+              ?disabled=${isStopped || !remoteOn}
               @click=${() =>
                 setWasherCommand(this, entities[ENTITY_KEYS.command], "stop")}
             >
@@ -843,7 +843,7 @@ export class SamsungHAWasherCard extends LitElement {
             </button>
           </div>
 
-          ${config.show_bubble_soak_control
+          ${config.show_bubble_soak_control && !isStopped
             ? html`
                 <button
                   class="toggle-btn ${bubbleSoakOn ? "active" : ""}"
@@ -855,7 +855,7 @@ export class SamsungHAWasherCard extends LitElement {
               `
             : ""}
 
-          ${showSettings
+          ${showSettings && !isStopped
             ? html`
                 <div class="washer-settings">
                   ${!isUnavailable(spinLevelValue)

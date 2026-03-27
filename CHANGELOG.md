@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.4 — 2026-03-27
+- `washer-card.js` — disable Start/Pause/Stop buttons when remote control is off
+- `washer-card.js` — hide bubble soak toggle and washer settings (spin level, rinse cycles, extra detergent) when stopped
+
 ## v0.5.3 — 2026-03-27
 - `washer-card.js` — finished/stopped status now correlates with green state: green → "Finished" / "Cycle complete", not green → "Stopped"
 
