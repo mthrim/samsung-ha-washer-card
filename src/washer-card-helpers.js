@@ -108,7 +108,7 @@ export function getSecondaryStatus(machineState, jobState) {
     return MACHINE_STATE_LABELS[machineState] || "Running";
   }
 
-  if (jobState === "finish") {
+  if (jobState === "finished") {
     return "Cycle complete";
   }
 

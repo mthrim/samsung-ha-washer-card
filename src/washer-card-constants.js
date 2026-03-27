@@ -54,7 +54,7 @@ export const JOB_STATE_LABELS = {
   spin: "Spinning",
   pre_wash: "Pre-Wash",
   delay_wash: "Delayed",
-  finish: "Finished",
+  finished: "Finished",
   none: "Idle",
   drying: "Drying",
   air_wash: "Air Wash",
