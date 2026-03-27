@@ -1,5 +1,31 @@
 # Changelog
 
+## v0.5.1 — 2026-03-27
+- `washer-card.js` — state caching now backed by HA history API; fetches last known non-unavailable state from the last hour when no in-memory cache exists (e.g. fresh page load during outage)
+
+## v0.5.0 — 2026-03-27
+- `washer-card.js` — in-memory state caching: when HA reports unavailable/unknown, card shows last known good state
+- `washer-card.js` — stale indicator: card dims to 60% opacity + cloud-off icon next to title when data is stale
+- `washer-card.js` — removed `isStopped && !isGreen` override; `getPrimaryStatus` now handles all stop states
+- `washer-card-helpers.js` — reverted incorrect `"finish"` → `"finished"` change (washer HA enum uses `"finish"`)
+
+## v0.4.5 — 2026-03-27
+- `washer-card-helpers.js` — reverted Idle/Standby fallback (replaced by state caching in v0.5.0)
+
+## v0.4.4 — 2026-03-27
+- `washer-card-helpers.js` — fixed remaining `"finish"` → `"finished"` in `getPrimaryStatus` (incorrectly changed, reverted in v0.5.0)
+
+## v0.4.3 — 2026-03-27
+- `washer-card-constants.js` — fixed job state key `"finish"` → `"finished"` (incorrectly changed, reverted in v0.5.0; washer uses `"finish"`)
+- `washer-card-helpers.js` — fixed `"finish"` → `"finished"` in `getSecondaryStatus` (incorrectly changed, reverted in v0.5.0)
+
+## v0.4.2 — 2026-03-27
+- `washer-card.js` — fixed progress circle: uses `transform: scale()` instead of oversized element; circle stays within drum boundary (140px)
+- `washer-card.js` — added pulse animation when < 10 minutes remaining (3s pulse > 5min, gradually speeds to 0.75s near 0)
+
+## v0.4.1 — 2026-03-27
+- `washer-card.js` — enlarged progress circle to 200px to extend beyond 140px drum (reverted in v0.4.2)
+
 ## v0.4.0 — 2026-03-27
 - `washer-card-helpers.js` — added `formatCountdown()`: formats remaining time as `Xh Ym` (>=90min), `Xm` (<=90min), or `Xm Ys` (<10min)
 - `washer-card.js` — changed drum progress from `conic-gradient` (clock sweep) to `radial-gradient` (center-outward fill) with 10% minimum radius
