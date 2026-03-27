@@ -712,8 +712,14 @@ export class SamsungHAWasherCard extends LitElement {
 
     const { isRunning, isPaused, isStopped } = this.getStateFlags(machineState);
     const isGreen = isFinishedRecently(machineStateEntity, config.finished_green_duration);
-    const primaryStatus = getPrimaryStatus(machineState, jobState);
-    const secondaryStatus = getSecondaryStatus(machineState, jobState);
+    const primaryStatus = isStopped && isGreen
+      ? "Finished"
+      : isStopped && !isGreen
+        ? "Stopped"
+        : getPrimaryStatus(machineState, jobState);
+    const secondaryStatus = isStopped && isGreen
+      ? "Cycle complete"
+      : getSecondaryStatus(machineState, jobState);
 
     const showCompletion =
       config.show_completion_time &&
