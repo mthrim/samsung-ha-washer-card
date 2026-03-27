@@ -88,7 +88,7 @@ export function getPrimaryStatus(machineState, jobState) {
     return JOB_STATE_LABELS[jobState] || MACHINE_STATE_LABELS[machineState] || "Running";
   }
 
-  if (machineState === "stop" && jobState === "finish") {
+  if (machineState === "stop" && jobState === "finished") {
     return "Finished";
   }
 
