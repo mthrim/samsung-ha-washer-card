@@ -178,17 +178,16 @@ export class SamsungHAWasherCard extends LitElement {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      height: 200px;
+      width: 140px;
+      height: 140px;
       border-radius: 50%;
       opacity: 0.55;
       pointer-events: none;
     }
 
     .hero.compact .drum-progress {
-      width: 128px;
-      height: 128px;
+      width: 88px;
+      height: 88px;
     }
 
     .drum {
@@ -488,6 +487,15 @@ export class SamsungHAWasherCard extends LitElement {
       }
     }
 
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 0.55;
+      }
+      50% {
+        opacity: 0.25;
+      }
+    }
+
     @media (max-width: 480px) {
       .hero {
         grid-template-columns: 1fr;
@@ -638,8 +646,23 @@ export class SamsungHAWasherCard extends LitElement {
       if (pct === null) return null;
       const color = config.drum_progress_color || "#5b9cf6";
       const raw = 100 - pct;
-      const filled = 65 + raw * 0.35;
-      return `background: radial-gradient(circle, ${color} ${filled}%, transparent ${filled}%);`;
+      const scale = 0.1 + raw * 0.009;
+      let style = `background: ${color}; transform: translate(-50%, -50%) scale(${scale});`;
+
+      if (completion) {
+        const remaining = (new Date(completion).getTime() - Date.now()) / 60000;
+        if (remaining <= 10 && remaining > 0) {
+          let duration;
+          if (remaining > 5) {
+            duration = 3;
+          } else {
+            duration = 3 - (5 - remaining) / 5 * 2.25;
+          }
+          style += ` animation: pulse ${duration}s ease-in-out infinite;`;
+        }
+      }
+
+      return style;
     })();
 
     const childLockOn = isOn(this.hass, entities[ENTITY_KEYS.childLock]);
