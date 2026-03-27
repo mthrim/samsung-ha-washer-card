@@ -268,16 +268,16 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       opacity: 0.55;
       pointer-events: none;
     }
 
     .hero.compact .drum-progress {
-      width: 88px;
-      height: 88px;
+      width: 128px;
+      height: 128px;
     }
 
     .drum {
@@ -647,7 +647,7 @@
           <div class="secondary-status">${i}</div>
         </div>
       </div>
-    `}render(){if(!this.hass||!this._config)return u``;let e=this._config,t=qe(e),i=F(this.hass,t[c.machineState]),r=i?i.state:void 0,o=C(this.hass,t[c.jobState]),n=C(this.hass,t[c.completionTime]),l=F(this.hass,t[c.power]),a=F(this.hass,t[c.cycleEnergy]),d=J(this.hass,t[c.bubbleSoak]),p=C(this.hass,t[c.spinLevel]),h=C(this.hass,t[c.rinseCycles]),g=C(this.hass,t[c.extraDetergent]),{isRunning:_,isPaused:x,isStopped:X}=this.getStateFlags(r),$e=et(i,e.finished_green_duration),ot=X&&!$e?"Stopped":Je(r,o),nt=Ze(r,o),ee=e.show_completion_time&&Qe(r,n),at=ee?it(l,n,e):null,lt=(()=>{if(!e.show_drum_progress||!_&&!x)return null;let Ae=_e(l,n);if(Ae===null)return null;let dt=e.drum_progress_color||"#5b9cf6",Ee=10+(100-Ae)*.9;return`background: radial-gradient(circle, ${dt} ${Ee}%, transparent ${Ee}%);`})(),ve=J(this.hass,t[c.childLock]),xe=J(this.hass,t[c.remoteControl]),we=l?fe(this.hass,l.state,l.attributes.unit_of_measurement):"",Se=a?fe(this.hass,a.state,a.attributes.unit_of_measurement):"",ct=["drum",_?"running":""].filter(Boolean).join(" "),ht=e.show_washer_settings&&(!f(p)||!f(h)||!f(g));return u`
+    `}render(){if(!this.hass||!this._config)return u``;let e=this._config,t=qe(e),i=F(this.hass,t[c.machineState]),r=i?i.state:void 0,o=C(this.hass,t[c.jobState]),n=C(this.hass,t[c.completionTime]),l=F(this.hass,t[c.power]),a=F(this.hass,t[c.cycleEnergy]),d=J(this.hass,t[c.bubbleSoak]),p=C(this.hass,t[c.spinLevel]),h=C(this.hass,t[c.rinseCycles]),g=C(this.hass,t[c.extraDetergent]),{isRunning:_,isPaused:x,isStopped:X}=this.getStateFlags(r),$e=et(i,e.finished_green_duration),ot=X&&!$e?"Stopped":Je(r,o),nt=Ze(r,o),ee=e.show_completion_time&&Qe(r,n),at=ee?it(l,n,e):null,lt=(()=>{if(!e.show_drum_progress||!_&&!x)return null;let Ae=_e(l,n);if(Ae===null)return null;let dt=e.drum_progress_color||"#5b9cf6",Ee=65+(100-Ae)*.35;return`background: radial-gradient(circle, ${dt} ${Ee}%, transparent ${Ee}%);`})(),ve=J(this.hass,t[c.childLock]),xe=J(this.hass,t[c.remoteControl]),we=l?fe(this.hass,l.state,l.attributes.unit_of_measurement):"",Se=a?fe(this.hass,a.state,a.attributes.unit_of_measurement):"",ct=["drum",_?"running":""].filter(Boolean).join(" "),ht=e.show_washer_settings&&(!f(p)||!f(h)||!f(g));return u`
       <ha-card class=${$e?"finished":""}>
         <div class="card">
           ${this.renderHeader(e,ee,n,at)}

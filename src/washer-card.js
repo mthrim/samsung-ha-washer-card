@@ -179,16 +179,16 @@ export class SamsungHAWasherCard extends LitElement {
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 140px;
-      height: 140px;
+      width: 200px;
+      height: 200px;
       border-radius: 50%;
       opacity: 0.55;
       pointer-events: none;
     }
 
     .hero.compact .drum-progress {
-      width: 88px;
-      height: 88px;
+      width: 128px;
+      height: 128px;
     }
 
     .drum {
@@ -638,7 +638,7 @@ export class SamsungHAWasherCard extends LitElement {
       if (pct === null) return null;
       const color = config.drum_progress_color || "#5b9cf6";
       const raw = 100 - pct;
-      const filled = 10 + raw * 0.9;
+      const filled = 65 + raw * 0.35;
       return `background: radial-gradient(circle, ${color} ${filled}%, transparent ${filled}%);`;
     })();
 
