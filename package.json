@@ -1,6 +1,6 @@
 {
   "name": "samsung-ha-washer-card",
-  "version": "0.1.0",
+  "version": "0.5.5",
   "description": "Samsung SmartThings Washer Card for Home Assistant",
   "author": "Christopher King",
   "license": "MIT",

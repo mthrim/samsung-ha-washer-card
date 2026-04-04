@@ -1,5 +1,9 @@
 # Changelog
 
+## v0.5.5 — 2026-04-04
+- `washer-card.js` — show "Finished at [time]" badge in header when cycle is complete (green state) and no running completion time is displayed; uses `machineStateEntity.last_changed` timestamp
+- Cleaned up stale duplicate files from `src/` (remnants of nested repo)
+
 ## v0.5.4 — 2026-03-27
 - `washer-card.js` — disable Start/Pause/Stop buttons when remote control is off
 - `washer-card.js` — hide bubble soak toggle and washer settings (spin level, rinse cycles, extra detergent) when stopped
